@@ -8,8 +8,11 @@ import { useAuth } from './context/AuthContext';
 
 // LATER please somone make a loading thing for the home page so that if it is trying to verify if you are logged or not it doesn't load the login page.
 function App() {
-  const user  = useAuth();
-
+  const {user, loading}  = useAuth();
+  if (loading) {
+    //If anyone is bored at any point they can make a custom page for this idk 
+    return <p>Loading</p>; 
+  }
   return (
     <BrowserRouter>
       <Routes>
