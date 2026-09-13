@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css'
-import {auth} from './firebase'
 import Dashboard from './pages/DashboardPage';
 import Opps from './pages/OpportunitiesPage';
 import Navbar from './components/Navbar';
 import Login from './pages/LoginPage';
+import { useAuth } from './context/AuthContext';
+
+// LATER please somone make a loading thing for the home page so that if it is trying to verify if you are logged or not it doesn't load the login page.
 function App() {
-  const user  = auth.currentUser
+  const user  = useAuth();
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element = {<Navigate to = {user ? "/home" : "/login"}/>}/>
+        <Route path="/" element = {<Navigate to = {user ? "/home" : "/list"}/>}/>
 
         <Route path = "/login" element = {<Login />} />
         <Route element = {<Navbar />}>
