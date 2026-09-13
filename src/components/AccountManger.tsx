@@ -16,6 +16,7 @@ function AccountManager() {
         signOut(auth);
     };
 
+    
     return (
         <div className="relative flex items-stretch">
             <button
