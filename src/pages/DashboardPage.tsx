@@ -7,9 +7,9 @@ let workType ={
     cook: "Cullinary"
 }
  class volunteerData{
-public locationName = "";
-public description = "";
-public types = [workType.comp, workType.mat];
+    public locationName = "";
+    public description = "";
+    public types = [workType.comp, workType.mat];
 }
  let data:volunteerData[] = [];
  let cd = new volunteerData();
