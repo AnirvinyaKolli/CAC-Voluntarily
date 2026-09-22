@@ -1,7 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function Dashboard() {
+  const {user, loading} = useAuth(); 
   const [activeTab, setActiveTab] = useState("upcoming");
+  const [uData, setUdata] = useState<any | null>(null); 
+  const [events, setEvents] = useState<any>([]); 
+
+  useEffect( () => {
+    if (user) {
+      const cUser = user; 
+      async function getData() {
+        const docRef = doc(db, "users", cUser.uid);
+        const docSnap = await getDoc(docRef);
+        setUdata(docSnap.data());
+
+        const eventsSanp = await getDocs(collection(db, "users", cUser.uid, "events"));
+        setEvents(eventsSanp.docs.map( (d) => ({
+          id : d.id,
+          title :d.data().title, 
+          date : d.data().date, 
+          hours: d.data().hours,
+          status: d.data().status
+        })));
+      }
+      getData();
+    }
+  }, [user]);
+  
+  if (loading) return (<p>loading ...</p>);
+  if (!uData) return (<p>loading ...</p>);
+
+  const renderCards = () => {
+    const filtered = events.filter((o: any) => o.status === activeTab);
+    if (filtered.length === 0) return <p>You have no {activeTab} events</p>;
+
+    return (filtered.map((opportunity : any) => (
+            <div
+              key={opportunity.id}
+              className="min-h-52 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-7 lg:min-h-56"
+            >
+              <div className="flex h-full flex-col justify-between">
+                <div>
+                  <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
+                    {opportunity.title}
+                  </h2>
+                  <p className="mt-3 text-sm text-gray-500 sm:text-base">
+                    {opportunity.date}
+                  </p>
+                </div>
+                <div className="mt-8 flex items-center justify-between">
+                  <span className="text-sm font-medium text-gray-600 sm:text-base">
+                    {opportunity.hours}
+                  </span>
+                </div>
+              </div>
+            </div>
+    )))
+  }
+
   // remeber user choice but I default to upcoming.
   const upcomingOpportunities = [
     {
@@ -38,15 +97,6 @@ export default function Dashboard() {
       hours: "5 hours",
     },
   ];
-  //random data bc me no know how to pull user info. I think we would prob get an array of objects(opps) and then use a for loop to assign ids but that you help me with!
-
-  let opportunities;
-
-  if (activeTab === "upcoming") {
-    opportunities = upcomingOpportunities;
-  } else {
-    opportunities = completedOpportunities;
-  }
 
   let completeTextColor =
     activeTab === "completed"
@@ -58,7 +108,6 @@ export default function Dashboard() {
       ? "text-gray-900"
       : "text-gray-400 hover:text-gray-600";
 
-  //choosing which array based on tab
   return (
     <main className="min-h-full bg-white px-6 py-8 sm:px-10 sm:py-10 lg:px-16 lg:py-12 xl:px-24">
       <div className="mx-auto w-full max-w-7xl">
@@ -75,14 +124,14 @@ export default function Dashboard() {
           {/*User info*/}
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl lg:text-4xl">
-              {"Your Name"}
+              {uData.email}
               {/*Pulling from database so help me? */}
             </h1>
 
             <div className="mt-2 space-y-1.5 text-sm sm:text-base lg:text-lg">
               <p className="text-gray-500">
                 <span className="font-medium text-gray-700">Total Hours: </span>
-                {"0 hours"}
+                { uData.totalHours + " hours"}
                 {/*I dont know how to pull user info. Anirvinya help meeeee*/}
               </p>
 
@@ -132,30 +181,8 @@ export default function Dashboard() {
           {/* Cards */}
           <div className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
             {/*Going through the array of opportunities*/}
-            {opportunities.map((opportunity) => (
-              <div
-                key={opportunity.id}
-                className="min-h-52 rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-7 lg:min-h-56"
-              >
-                <div className="flex h-full flex-col justify-between">
-                  <div>
-                    <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
-                      {opportunity.title}
-                    </h2>
-
-                    <p className="mt-3 text-sm text-gray-500 sm:text-base">
-                      {opportunity.date}
-                    </p>
-                  </div>
-
-                  <div className="mt-8 flex items-center justify-between">
-                    <span className="text-sm font-medium text-gray-600 sm:text-base">
-                      {opportunity.hours}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {/* idk might replace ": any" with an actual type if im less lazy in the future */}
+            {renderCards()}
           </div>
         </section>
       </div>

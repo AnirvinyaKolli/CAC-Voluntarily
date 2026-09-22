@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
 function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false);
 
@@ -19,7 +21,14 @@ function LoginPage() {
         console.log(email + password)
         try {
             if(isSignUp){
-                await createUserWithEmailAndPassword(auth, email, password)
+                const user = (await createUserWithEmailAndPassword(auth, email, password)).user; 
+
+                await setDoc(doc(db, "users", user.uid), {
+                    uid: user.uid,
+                    email,
+                    totalHours: 0
+                });
+
             } else {
                 await signInWithEmailAndPassword(auth, email, password)
             }
@@ -27,6 +36,7 @@ function LoginPage() {
         } catch (err) {
             console.log(err);
         }
+
     }
 
 
