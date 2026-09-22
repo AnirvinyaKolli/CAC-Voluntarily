@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 
+
 export default function Dashboard() {
   const {user, loading} = useAuth(); 
   const [activeTab, setActiveTab] = useState("upcoming");
@@ -61,49 +62,14 @@ export default function Dashboard() {
     )))
   }
 
-  // remeber user choice but I default to upcoming.
-  const upcomingOpportunities = [
-    {
-      id: 1,
-      title: "Volunteer Opportunity",
-      date: "September 25, 2026",
-      hours: "3 hours",
-    },
-    {
-      id: 2,
-      title: "Community Event",
-      date: "October 2, 2026",
-      hours: "2 hours",
-    },
-    {
-      id: 3,
-      title: "Food Drive",
-      date: "October 10, 2026",
-      hours: "4 hours",
-    },
-  ];
+  
 
-  const completedOpportunities = [
-    {
-      id: 4,
-      title: "Completed Event",
-      date: "September 10, 2026",
-      hours: "3 hours",
-    },
-    {
-      id: 5,
-      title: "Community Service",
-      date: "September 5, 2026",
-      hours: "5 hours",
-    },
-  ];
-
-  let completeTextColor =
+  const completeTextColor =
     activeTab === "completed"
       ? "text-gray-900"
       : "text-gray-400 hover:text-gray-600";
 
-  let upcomingTextColor =
+  const upcomingTextColor =
     activeTab === "upcoming"
       ? "text-gray-900"
       : "text-gray-400 hover:text-gray-600";
@@ -133,12 +99,6 @@ export default function Dashboard() {
                 <span className="font-medium text-gray-700">Total Hours: </span>
                 { uData.totalHours + " hours"}
                 {/*I dont know how to pull user info. Anirvinya help meeeee*/}
-              </p>
-
-              <p className="text-gray-500">
-                <span className="font-medium text-gray-700">Class of </span>
-                {"2028"}
-                {/*Same thing here buddy */}
               </p>
             </div>
           </div>

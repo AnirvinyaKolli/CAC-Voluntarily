@@ -2,10 +2,13 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import { useNavigate } from "react-router-dom";
 
 //Change the html stuff for proper styling later. 
 function AccountManager() {
     const [open, setOpen] = useState(false);
+    const navigate = useNavigate();
+
 
     const { user } = useAuth();
     const handleClick = () => {
@@ -14,6 +17,7 @@ function AccountManager() {
 
     const handleSignOut = () => {
         signOut(auth);
+        navigate("/login");
     };
 
     

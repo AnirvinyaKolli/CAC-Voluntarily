@@ -4,6 +4,7 @@ import AccountManager from "./AccountManger";
 
 function Navbar() {
     const { user } = useAuth();
+
     return (
         <div>
             <nav className="flex items-stretch justify-between bg-[#4a4a4a] text-[#ffffe3] shadow-md">

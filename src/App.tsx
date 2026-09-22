@@ -20,7 +20,8 @@ function App() {
 
         <Route path = "/login" element = {<Login />} />
         <Route element = {<Navbar />}>
-          <Route path="/home" element={<Dashboard />} />
+          <Route path="/home" element={<Navigate to = {user ? "/dashboard" : "/login"}/>} />
+          <Route path = "/dashboard" element={<Dashboard></Dashboard>} />
           <Route path="/list" element={<Opps />} />
         </Route>
 
