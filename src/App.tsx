@@ -5,23 +5,24 @@ import Opps from './pages/OpportunitiesPage';
 import Navbar from './components/Navbar';
 import Login from './pages/LoginPage';
 import { useAuth } from './context/AuthContext';
+import EllipseLoader from './components/EllipsesLoading';
 
 // LATER please somone make a loading thing for the home page so that if it is trying to verify if you are logged or not it doesn't load the login page.
 function App() {
-  const {user, loading}  = useAuth();
+  const { user, loading } = useAuth();
   if (loading) {
     //If anyone is bored at any point they can make a custom page for this idk 
-    return <p>Loading</p>; 
+    return <p><EllipseLoader></EllipseLoader></p>;
   }
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element = {<Navigate to = {user ? "/home" : "/list"}/>}/>
+        <Route path="/" element={<Navigate to={user ? "/home" : "/list"} />} />
 
-        <Route path = "/login" element = {<Login />} />
-        <Route element = {<Navbar />}>
-          <Route path="/home" element={<Navigate to = {user ? "/dashboard" : "/login"}/>} />
-          <Route path = "/dashboard" element={<Dashboard></Dashboard>} />
+        <Route path="/login" element={<Login />} />
+        <Route element={<Navbar />}>
+          <Route path="/home" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+          <Route path="/dashboard" element={<Dashboard></Dashboard>} />
           <Route path="/list" element={<Opps />} />
         </Route>
 
