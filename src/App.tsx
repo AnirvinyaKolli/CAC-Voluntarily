@@ -7,6 +7,7 @@ import Login from './pages/LoginPage';
 import { useAuth } from './context/AuthContext';
 import CompleteProfile from './pages/CompleteProfile';
 import { useUserData } from './context/UserDataContext';
+import EllipseLoader from './components/EllipsesLoading';
 
 // LATER please somone make a loading thing for the home page so that if it is trying to verify if you are logged or not it doesn't load the login page.
 function App() {
@@ -14,7 +15,7 @@ function App() {
   const {userData} = useUserData();
     
   if (loading || (user && userData == null)) {
-    return <p>Loading</p>;
+    return <EllipseLoader></EllipseLoader>;
 }
 
   return (
