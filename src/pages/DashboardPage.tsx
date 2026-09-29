@@ -6,7 +6,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { collection, doc, getDoc, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import { useUserData } from "../context/UserDataContext";
 import { profilePictures } from "../assets/ProfilePictures";
@@ -23,7 +23,7 @@ export default function Dashboard() {
       const cUser = user;
       async function getData() {
         const eventsSanp = await getDocs(collection(db, "users", cUser.uid, "events"));
-        setEvents(eventsSanp.docs.map((d) => ({
+        setEvents(eventsSanp.docs.map((d) => ({  //Someone make an a type for this
           id: d.id,
           title: d.data().title,
           date: d.data().date,
@@ -141,7 +141,6 @@ export default function Dashboard() {
           {/* Cards */}
           <div className="mt-8 grid grid-cols-1 gap-6 sm:mt-10 sm:grid-cols-2 lg:grid-cols-3">
             {/*Going through the array of opportunities*/}
-            {/* idk might replace ": any" with an actual type if im less lazy in the future */}
             {renderCards()}
           </div>
         </section>

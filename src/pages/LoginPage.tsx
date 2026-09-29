@@ -34,6 +34,7 @@ function LoginPage() {
 
                 await setDoc(doc(db, "users", user.uid), nUser);
                 nav('/completeProfile')
+                // Some reason, sometimes doesn't route here and routs to the HOME??? idk gng 
 
             } else {
                 await signInWithEmailAndPassword(auth, email, password)

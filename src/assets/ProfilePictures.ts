@@ -7,3 +7,5 @@ export const profilePictures:string[] = [
     pfp1,
     pfp1,
 ]
+
+// COLLECT ACTUAL PFPs to put here. 

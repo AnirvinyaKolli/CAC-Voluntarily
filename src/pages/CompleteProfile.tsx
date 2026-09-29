@@ -1,3 +1,6 @@
+// SOMEONE STYLE
+// in future: add quiz/survey to sort the oppurtunities properly for them
+// ZIP CODE?
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, updateDoc } from "firebase/firestore";

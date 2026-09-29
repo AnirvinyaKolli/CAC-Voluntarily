@@ -17,7 +17,7 @@ function App() {
   if (loading || (user && userData == null)) {
     return <EllipseLoader></EllipseLoader>;
 }
-
+  // Someone fix this mess of routing PLEASE. I promise there is better ways to do this :/
   return (
     <BrowserRouter>
       <Routes>

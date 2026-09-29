@@ -1,3 +1,5 @@
+// Size the account manager button properly so that the things in the drop down don't get squished
+
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AccountManager from "./AccountManger";

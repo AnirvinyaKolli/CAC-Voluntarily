@@ -1,3 +1,5 @@
+//THIS THE LIST OF EVERYTHING IN USER DATA APART FROM THE COLLECTIONS OF EVENTS
+
 export interface UserData {
     // Created at when u login 
     uid : string
