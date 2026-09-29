@@ -3,10 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { doc, setDoc } from "firebase/firestore";
-import { useAuth } from "../context/AuthContext";
+import type { UserData } from "../UserData";
+
 function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false);
-
     const handleSignUp = () => {
         setIsSignUp(!isSignUp);
     };
@@ -18,21 +18,28 @@ function LoginPage() {
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(email + password)
         try {
             if(isSignUp){
                 const user = (await createUserWithEmailAndPassword(auth, email, password)).user; 
 
-                await setDoc(doc(db, "users", user.uid), {
+                const nUser: UserData = {
                     uid: user.uid,
-                    email,
-                    totalHours: 0
-                });
+                    email: email,
+                    totalHours: 0,
+                    completedSignup: false, 
+                    
+                    displayName: email,
+                    pfpChoice: 0 
+                }
+
+                await setDoc(doc(db, "users", user.uid), nUser);
+                nav('/completeProfile')
 
             } else {
                 await signInWithEmailAndPassword(auth, email, password)
+                nav('/')
             }
-            nav('/home')
+            
         } catch (err) {
             console.log(err);
         }

@@ -1,23 +1,26 @@
+//BIG Error for someone else to bother about:
+// need to refresh page for any changes written to data base to show up here, since it pulls data from useUserData, which is called once when the entire website loads. 
+// idk, make a refetch function on there, or 
+// use the proper live listener for the data base which i dont wanna do cuz its a pain. 
+
+
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
-
+import { useUserData } from "../context/UserDataContext";
+import { profilePictures } from "../assets/ProfilePictures";
 
 export default function Dashboard() {
   const {user, loading} = useAuth(); 
   const [activeTab, setActiveTab] = useState("upcoming");
-  const [uData, setUdata] = useState<any | null>(null); 
+  const {userData} = useUserData();  
   const [events, setEvents] = useState<any>([]); 
 
   useEffect( () => {
     if (user) {
       const cUser = user; 
       async function getData() {
-        const docRef = doc(db, "users", cUser.uid);
-        const docSnap = await getDoc(docRef);
-        setUdata(docSnap.data());
-
         const eventsSanp = await getDocs(collection(db, "users", cUser.uid, "events"));
         setEvents(eventsSanp.docs.map( (d) => ({
           id : d.id,
@@ -32,7 +35,7 @@ export default function Dashboard() {
   }, [user]);
   
   if (loading) return (<p>loading ...</p>);
-  if (!uData) return (<p>loading ...</p>);
+  if (!userData) return (<p>loading ...</p>);
 
   const renderCards = () => {
     const filtered = events.filter((o: any) => o.status === activeTab);
@@ -80,24 +83,21 @@ export default function Dashboard() {
         <section className="flex items-center gap-6 sm:gap-8">
           <div className="flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gray-200 sm:h-32 sm:w-32 lg:h-36 lg:w-36">
             <span className="text-4xl text-gray-400 sm:text-5xl">
-              {/* Placeholder for the user img instead of having to go through the ordeal of filtering bad images
-                 and having to load this images from them we can js provide like 12 different images like aniko and
-                  let them pick
-                <img src="" alt="" /> */}
+                <img src={profilePictures[userData.pfpChoice]} alt="" /> 
             </span>
           </div>
 
           {/*User info*/}
           <div>
             <h1 className="text-2xl font-semibold text-gray-900 sm:text-3xl lg:text-4xl">
-              {uData.email}
+              {userData.displayName}
               {/*Pulling from database so help me? */}
             </h1>
 
             <div className="mt-2 space-y-1.5 text-sm sm:text-base lg:text-lg">
               <p className="text-gray-500">
                 <span className="font-medium text-gray-700">Total Hours: </span>
-                { uData.totalHours + " hours"}
+                { userData.totalHours + " hours"}
                 {/*I dont know how to pull user info. Anirvinya help meeeee*/}
               </p>
             </div>

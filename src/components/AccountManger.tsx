@@ -3,14 +3,14 @@ import { useAuth } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import { useUserData } from "../context/UserDataContext";
 
 //Change the html stuff for proper styling later. 
 function AccountManager() {
     const [open, setOpen] = useState(false);
     const navigate = useNavigate();
+    const {userData } = useUserData(); 
 
-
-    const { user } = useAuth();
     const handleClick = () => {
         setOpen(!open);
     };
@@ -27,7 +27,7 @@ function AccountManager() {
                 onClick={handleClick}
                 className="flex items-center px-4 py-5 text-[#ffffe3] transition-colors duration-200 hover:bg-[#6d8196]"
             >
-                {user?.email}
+                {userData?.displayName}
             </button>
             {open && (
                 <div className="absolute right-0 top-full z-10 w-full min-w-full bg-[#4a4a4a] shadow-md">

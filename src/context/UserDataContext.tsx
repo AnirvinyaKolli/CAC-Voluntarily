@@ -2,9 +2,10 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 import { useAuth } from "./AuthContext";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebase";
+import type { UserData } from "../UserData";
 
 interface UserDataContextType {
-    userData : any | null // ts is 'any' rn cuz i dont know what type the doc or whatever it is is called.  
+    userData : UserData | null 
     loading : boolean;
 }
 
@@ -14,7 +15,7 @@ const UserDataContext = createContext<UserDataContextType>({
 })
 export function  UserDataProvider({children} : {children :ReactNode}) {
     const {user,} = useAuth(); 
-    const [userData, setProfile] = useState<any | null>();
+    const [userData, setProfile] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,7 +29,7 @@ export function  UserDataProvider({children} : {children :ReactNode}) {
         async function fetchProfile() {
             setLoading(true);
             const snap = await getDoc(doc(db, "users", cUser.uid));
-            setProfile(snap.exists() ? snap.data() : null);
+            setProfile(snap.exists() ? snap.data() as UserData : null);
             setLoading(false);
         }
         fetchProfile(); 
