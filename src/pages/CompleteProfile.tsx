@@ -24,6 +24,7 @@ function CompleteProfile() {
             displayName,
             pfpChoice: 0,
             completedSignup: true,
+            zip: "00000"
         });
         console.log("Extra data finsiehd");
         nav('/dashboard');

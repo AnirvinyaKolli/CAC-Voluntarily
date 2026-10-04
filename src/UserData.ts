@@ -10,5 +10,6 @@ export interface UserData {
     // Stuff you get in extened sign up
     displayName : string 
     pfpChoice : number  
+    zip : string
 
 }

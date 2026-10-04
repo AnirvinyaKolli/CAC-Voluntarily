@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from "../firebase";
+import { auth, db } from "../firebase";   
 import { doc, setDoc } from "firebase/firestore";
 import type { UserData } from "../UserData";
-
-function LoginPage() {
+   function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false);
     const handleSignUp = () => {
         setIsSignUp(!isSignUp);
@@ -29,12 +28,12 @@ function LoginPage() {
                     completedSignup: false, 
                     
                     displayName: email,
-                    pfpChoice: 0 
+                    pfpChoice: 0,
+                    zip : "00000"
                 }
 
                 await setDoc(doc(db, "users", user.uid), nUser);
                 nav('/completeProfile')
-                // Some reason, sometimes doesn't route here and routs to the HOME??? idk gng 
 
             } else {
                 await signInWithEmailAndPassword(auth, email, password)
