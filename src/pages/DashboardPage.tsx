@@ -1,9 +1,3 @@
-//BIG Error for someone else to bother about:
-// need to refresh page for any changes written to data base to show up here, since it pulls data from useUserData, which is called once when the entire website loads. 
-// idk, make a refetch function on there, or 
-// use the proper live listener for the data base which i dont wanna do cuz its a pain. 
-
-
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
