@@ -1,4 +1,3 @@
-// src/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { auth } from "../firebase";
@@ -21,6 +20,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
     return unsubscribe;
   }, []);
+  
 
   return (
     <AuthContext.Provider value={{ user, loading }}>

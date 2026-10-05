@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
-function LoginPage() {
+import { auth, db } from "../firebase";   
+import { doc, setDoc } from "firebase/firestore";
+import type { UserData } from "../UserData";
+   function LoginPage() {
     const [isSignUp, setIsSignUp] = useState(false);
-
     const handleSignUp = () => {
         setIsSignUp(!isSignUp);
     };
@@ -16,17 +17,33 @@ function LoginPage() {
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(email + password)
         try {
             if(isSignUp){
-                await createUserWithEmailAndPassword(auth, email, password)
+                const user = (await createUserWithEmailAndPassword(auth, email, password)).user; 
+
+                const nUser: UserData = {
+                    uid: user.uid,
+                    email: email,
+                    totalHours: 0,
+                    completedSignup: false, 
+                    
+                    displayName: email,
+                    pfpChoice: 0,
+                    zip : "00000"
+                }
+
+                await setDoc(doc(db, "users", user.uid), nUser);
+                nav('/completeProfile')
+
             } else {
                 await signInWithEmailAndPassword(auth, email, password)
+                nav('/')
             }
-            nav('/home')
+            
         } catch (err) {
             console.log(err);
         }
+
     }
 
 

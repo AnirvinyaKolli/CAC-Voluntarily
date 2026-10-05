@@ -1,9 +1,12 @@
+// Size the account manager button properly so that the things in the drop down don't get squished
+
 import { Link, Outlet } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import AccountManager from "./AccountManger";
 
 function Navbar() {
     const { user } = useAuth();
+
     return (
         <div>
             <nav className="flex items-stretch justify-between bg-[#4a4a4a] text-[#ffffe3] shadow-md">
