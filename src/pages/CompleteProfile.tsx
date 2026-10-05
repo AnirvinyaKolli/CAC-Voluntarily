@@ -15,7 +15,7 @@ function CompleteProfile() {
 
     const [displayName, setDisplayName] = useState("");
     const [selectedPicture, setSelectedPicutre] = useState(0);
-
+    const [zipCode, setZipCode] = useState("");
     const handleSubmit = async (e:React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!user) return;
@@ -24,7 +24,7 @@ function CompleteProfile() {
             displayName,
             pfpChoice: 0,
             completedSignup: true,
-            zip: "00000"
+            zip: zipCode
         });
         console.log("Extra data finsiehd");
         nav('/dashboard');
@@ -40,7 +40,18 @@ function CompleteProfile() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                 />
-
+                 <div className="mt-4">
+                    <label>Enter your ZIP code: </label>
+                    <input
+                        type="text"
+                        value={zipCode}
+                        onChange={(e) => setZipCode(e.target.value)}
+                        placeholder="e.g. 07834"
+                        maxLength={5}
+                        pattern="[0-9]{5}"
+                        required
+                    />
+                </div>
                 <p className="mt-4 mb-2">Pick a profile picture:</p>
                 <div className="flex flex-wrap gap-3">
                     {profilePictures.map((src, index) => (
