@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, getDocs, doc, getDoc } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, addDoc, setDoc } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 let workType = {
@@ -58,6 +58,19 @@ function Dashboard() {
                     opportunities.push(volunteer);
                 });
                 setData(opportunities);
+                 if (opportunities.length === 0 && userZip) {
+                    const zipcodeDoc = await getDoc(
+                        doc(db, "zipcodesForScrapeying", userZip)
+                    );
+                    if (!zipcodeDoc.exists()) {
+                        await setDoc(
+                            doc(db, "zipcodesForScrapeying", userZip),
+                            {
+                                zip: userZip
+                            }
+                        );
+                    }
+                }
             } catch (error) {
                 console.error("Error getting opportunities:", error);
             }
