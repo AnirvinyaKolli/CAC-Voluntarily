@@ -56,11 +56,11 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#F5F5F5]">
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-[url(src/assets/background3.jpg)] bg-cover bg-center">
       <h1 className="mb-6 text-center text-5xl font-bold text-gray-900">
         {isSignUp ? "Sign Up:" : "Log in:"}
       </h1>
-      <div className="w-full max-w-md bg-[#F5F5F5] p-8 justify-center">
+      <div className="w-full max-w-md bg-clear p-8 justify-center">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <label className="text-sm font-medium text-gray-900">
             Enter email:
