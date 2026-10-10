@@ -32,24 +32,23 @@ function Dashboard() {
             const querySnapshot = await getDocs(q);
 
             const opportunities: OpportunityData[] = [];
-                querySnapshot.forEach((doc) => {
-                const firebaseData = doc.data();
-                const volunteer : OpportunityData = {
-                    locationName: firebaseData.name || "",
-                    description: "",
-                    types: firebaseData.type ? [firebaseData.type] : [],
-                    location: firebaseData.location || "",
-                    daysAvailable: firebaseData.daysAvailable || "",
-                    ageRange: firebaseData.ageRange || ""
-                };
-
-                //changed from class to an actual ts type. 
-                volunteer.description =
-                    `${firebaseData.type || "Volunteer opportunity"}\n` +
-                    `Location: ${firebaseData.location || "N/A"}\n` +
-                    `Availability: ${firebaseData.daysAvailable || "N/A"}\n` +
-                    `Age: ${firebaseData.ageRange || "N/A"}`;
-                    opportunities.push(volunteer);
+            querySnapshot.forEach((doc) => {
+            const firebaseData = doc.data();
+            const volunteer : OpportunityData = {
+                locationName: firebaseData.name || "",
+                description: "",
+                types: firebaseData.type ? [firebaseData.type] : [],
+                location: firebaseData.location || "",
+                daysAvailable: firebaseData.daysAvailable || "",
+                ageRange: firebaseData.ageRange || ""
+            };
+            //changed from class to an actual ts type. 
+            volunteer.description =
+                `${firebaseData.type || "Volunteer opportunity"}\n` +
+                `Location: ${firebaseData.location || "N/A"}\n` +
+                `Availability: ${firebaseData.daysAvailable || "N/A"}\n` +
+                `Age: ${firebaseData.ageRange || "N/A"}`;
+                opportunities.push(volunteer);
             });
 
             setData(opportunities);
