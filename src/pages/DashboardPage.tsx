@@ -9,18 +9,18 @@ import EllipseLoader from "../components/EllipsesLoading";
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
-  const { userData } = useUserData();
+  const { userData, loading: userDataLoading } = useUserData();
   const [events, setEvents] = useState<any>([]);
 
   useEffect(() => {
     if (user) {
       const cUser = user;
       async function getData() {
-        const eventsSanp = await getDocs(
+        const eventsSnap = await getDocs(
           collection(db, "users", cUser.uid, "events"),
         );
         setEvents(
-          eventsSanp.docs.map((d) => ({
+          eventsSnap.docs.map((d) => ({
             //Someone make an a type for this
             id: d.id,
             title: d.data().title,
@@ -34,7 +34,7 @@ export default function Dashboard() {
     }
   }, [user]);
 
-  if (loading) return <EllipseLoader></EllipseLoader>;
+  if (loading || userDataLoading) return <EllipseLoader></EllipseLoader>;
   if (!userData)
     return (
       <p className="flex h-screen items-center justify-center gap-2 text-gray-500 text-xl">
