@@ -6,39 +6,38 @@ import { useUserData } from "../context/UserDataContext";
 
 //Change the html stuff for proper styling later. i.e. proper dropdowns what not
 function AccountManager() {
-    const [open, setOpen] = useState(false);
-    const navigate = useNavigate();
-    const {userData } = useUserData(); 
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { userData } = useUserData();
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
+  const handleClick = () => {
+    setOpen(!open);
+  };
 
-    const handleSignOut = () => {
-        signOut(auth);
-        navigate("/login");
-    };
+  const handleSignOut = () => {
+    signOut(auth);
+    navigate("/login");
+  };
 
-    
-    return (
-        <div className="relative flex items-stretch">
-            <button
-                onClick={handleClick}
-                className="flex items-center px-4 py-5 text-[#ffffe3] transition-colors duration-200 hover:bg-[#6d8196]"
-            >
-                {userData?.displayName}
-            </button>
-            {open && (
-                <div className="absolute right-0 top-full z-10 w-full min-w-full bg-[#4a4a4a] shadow-md">
-                    <button
-                        onClick={handleSignOut}
-                        className="flex h-full w-full items-center justify-center px-4 py-5 text-center text-[#ffffe3] transition-colors duration-200 hover:bg-[#6d8196]"
-                    >
-                        Sign out?
-                    </button>
-                </div>
-            )}
+  return (
+    <div className="relative flex items-stretch">
+      <button
+        onClick={handleClick}
+        className="flex items-center px-12 py-5 text-[#ffffe3] transition-colors duration-200 hover:bg-[#020079]"
+      >
+        {userData?.displayName}
+      </button>
+      {open && (
+        <div className="absolute right-0 top-full z-10 w-full min-w-full bg-[#0006b1] shadow-md">
+          <button
+            onClick={handleSignOut}
+            className="flex h-full w-full items-center justify-center px-4 py-5 text-center text-[#ffffe3] transition-colors duration-200 hover:bg-[#0021f3]"
+          >
+            Sign out?
+          </button>
         </div>
-    );
+      )}
+    </div>
+  );
 }
 export default AccountManager;
