@@ -56,13 +56,13 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex h-screen w-screen flex-col items-center justify-center bg-[url(src/assets/background3.jpg)] bg-cover bg-center">
-      <h1 className="mb-6 text-center text-5xl font-bold text-gray-900">
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-[url(src/assets/blueBg.jpg)] bg-cover bg-center">
+      <h1 className="mb-6 text-center text-5xl font-bold text-[#020079]">
         {isSignUp ? "Sign Up:" : "Log in:"}
       </h1>
       <div className="w-full max-w-md bg-clear p-8 justify-center">
         <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <label className="text-sm font-medium text-gray-900">
+          <label className="text-sm font-medium text-[#020079]">
             Enter email:
           </label>
           <input
@@ -70,7 +70,7 @@ function LoginPage() {
             onChange={handleEChange}
             className="rounded-md border border-gray-300 bg-white px-3 py-2 outline-none focus:border-[#6d8196] focus:ring-1 focus:ring-[#6d8196]"
           />
-          <label className="text-sm font-medium text-gray-900">
+          <label className="text-sm font-medium text-[#020079]">
             Enter password:
           </label>
           <input
@@ -81,12 +81,12 @@ function LoginPage() {
           <input
             type="submit"
             value={isSignUp ? "Sign Up" : "Log in"}
-            className="rounded-full mt-2 cursor-pointer bg-[#6d8196] px-3 py-2 font-medium text-[#ffffe3] transition-colors hover:bg-[#8da1b6]"
+            className="rounded-full mt-2 cursor-pointer bg-black px-3 py-2 font-medium text-[#ffffe3] transition-colors hover:bg-[#4300ff]"
           />
           <button
             type="button"
             onClick={handleSignUp}
-            className="rounded-full inline-block bg-[#4a4a4a] px-3 py-2 text-[#ffffe3] transition-colors hover:bg-[#6a6a6a]"
+            className="rounded-full inline-block bg-[#020079] px-3 py-2 text-[#ffffe3] transition-colors hover:bg-[#4300ff]"
           >
             {isSignUp ? "Have an account? log in" : "Sign Up"}
           </button>
