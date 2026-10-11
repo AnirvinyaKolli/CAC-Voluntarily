@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useUserData } from "../context/UserDataContext";
 import EllipseLoader from "../components/EllipsesLoading";
 import type { OpportunityData } from "../OpportunityData";
+import OpportunityCard from "../components/OpportunityCard";
 
 let workType = {
     comp: "ComputerScience",
@@ -79,32 +80,7 @@ function Dashboard() {
             <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
                 {data.map((volunteer) => (
-                    <article
-                        key={volunteer.locationName}
-                        className="rounded-lg bg-white p-5 shadow-md"
-                    >
-                        <h2 className="mb-3 text-xl font-bold text-gray-900">
-                            {volunteer.locationName}
-                        </h2>
-
-                        <p className="whitespace-pre-line text-gray-600">
-                            {volunteer.description}
-                        </p>
-
-                        <div className="mt-4">
-                            <h3 className="mb-2 text-sm font-semibold text-gray-700">Work types</h3>
-                            <div className="flex flex-wrap gap-2">
-                                {volunteer.types.map((type) => (
-                                    <span
-                                        key={type}
-                                        className="rounded-full bg-blue-100 px-3 py-1 text-sm text-blue-800"
-                                    >
-                                        {type}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                    </article>
+                    <OpportunityCard opportunity={volunteer}/>
                 ))}
 
             </div>

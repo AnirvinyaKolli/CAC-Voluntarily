@@ -3,6 +3,7 @@ import { signOut } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import { useUserData } from "../context/UserDataContext";
+import { profilePictures } from "../assets/ProfilePictures";
 
 //Change the html stuff for proper styling later. i.e. proper dropdowns what not
 function AccountManager() {
@@ -25,6 +26,11 @@ function AccountManager() {
         onClick={handleClick}
         className="flex items-center px-12 py-5 text-[#ffffe3] transition-colors duration-200 hover:bg-[#020079]"
       >
+        <img
+          src={userData?.pfpChoice ? profilePictures[userData.pfpChoice] : profilePictures[0]}
+          alt="Profile"
+          className="mr-2 h-8 w-8 rounded-full"
+        />
         {userData?.displayName}
       </button>
       {open && (
