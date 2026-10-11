@@ -5,6 +5,7 @@ export interface OpportunityData {
     location: string
     daysAvailable: string
     ageRange: string
+    id: string
 }
 
 // Referencing below: 

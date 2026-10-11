@@ -26,7 +26,9 @@ function Leaderboard() {
                     completedSignup: d.data().completedSignup,
                     displayName: d.data().displayName,
                     pfpChoice: d.data().pfpChoice,
-                    zip: d.data().zip
+                    zip: d.data().zip,
+                    opportunitiesCompleted: d.data().opportunitiesCompleted,
+                    opportunitiesSignedUp: d.data().opportunitiesSignedUp
                 }))
             );
         };

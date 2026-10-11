@@ -1,40 +1,48 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { useUserData } from "../context/UserDataContext";
 import { profilePictures } from "../assets/ProfilePictures";
 import EllipseLoader from "../components/EllipsesLoading";
+import type { OpportunityData } from "../OpportunityData";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
   const { userData, loading: userDataLoading } = useUserData();
-  const [events, setEvents] = useState<any>([]);
+  const [completedEvents, setCompletedEvents] = useState<OpportunityData[]>([]);
+  const [signedupEvents, setSignedupEvents] = useState<OpportunityData[]>([]);
+
 
   useEffect(() => {
-    if (user) {
-      const cUser = user;
-      async function getData() {
-        const eventsSnap = await getDocs(
-          collection(db, "users", cUser.uid, "events"),
-        );
-        setEvents(
-          eventsSnap.docs.map((d) => ({
-            //Someone make an a type for this
-            id: d.id,
-            title: d.data().title,
-            date: d.data().date,
-            hours: d.data().hours,
-            status: d.data().status,
-          })),
-        );
-      }
-      getData();
+    async function fetchOpportunities(ids: string[] = []): Promise<OpportunityData[]> {
+      const snaps = await Promise.all(
+        ids.map((id) => getDoc(doc(db, "opportunities", id)))
+      );
+      return snaps
+        .filter((s) => s.exists())
+        .map((s) => {
+          const d = s.data()!;
+          return {
+            id: s.id,
+            locationName: d.locationName ?? d.name ?? "",
+            description: d.description ?? "",
+            types: d.types ?? (d.type ? [d.type] : []),
+            location: d.location ?? "",
+            daysAvailable: d.daysAvailable ?? "",
+            ageRange: d.ageRange ?? "",
+          };
+        });
     }
-  }, [user]);
-
+    if (!userData) return;
+    fetchOpportunities(userData.opportunitiesCompleted).then(setCompletedEvents);
+    fetchOpportunities(userData.opportunitiesSignedUp).then(setSignedupEvents);
+  }, [userData]);
+  
   if (loading || userDataLoading) return <EllipseLoader></EllipseLoader>;
+
   if (!userData)
     return (
       <p className="flex h-screen items-center justify-center gap-2 text-gray-500 text-xl">
@@ -43,10 +51,14 @@ export default function Dashboard() {
     );
 
   const renderCards = () => {
-    const filtered = events.filter((o: any) => o.status === activeTab);
-    if (filtered.length === 0)
+    const events = activeTab === "completed" ? completedEvents : signedupEvents;
+    console.log(events.map((e) => e.id));
+    console.log(userData.opportunitiesCompleted);
+    console.log(userData.opportunitiesSignedUp);
+    if (events.length === 0)
       return <p className="text-[#020079]">You have no {activeTab} events</p>;
-    return filtered.map((opportunity: any) => (
+
+    return events.map((opportunity: OpportunityData) => (
       <div
         key={opportunity.id}
         className="min-h-52 rounded-2xl border border-gray-200 bg-gray-100 p-6 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:shadow-md sm:p-7 lg:min-h-56"
@@ -54,15 +66,15 @@ export default function Dashboard() {
         <div className="flex h-full flex-col justify-between">
           <div>
             <h2 className="text-lg font-semibold text-gray-900 sm:text-xl">
-              {opportunity.title}
+              {opportunity.locationName}
             </h2>
             <p className="mt-3 text-sm text-gray-500 sm:text-base">
-              {opportunity.date}
+              {opportunity.daysAvailable}
             </p>
           </div>
           <div className="mt-8 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-600 sm:text-base">
-              {opportunity.hours}
+              {opportunity.location}
             </span>
           </div>
         </div>

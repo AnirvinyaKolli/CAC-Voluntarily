@@ -11,5 +11,7 @@ export interface UserData {
     displayName : string 
     pfpChoice : number  
     zip : string
+    opportunitiesCompleted : string[]
+    opportunitiesSignedUp : string[]
 
 }

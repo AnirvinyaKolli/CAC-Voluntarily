@@ -34,6 +34,8 @@ function LoginPage() {
           displayName: email,
           pfpChoice: 0,
           zip: "00000",
+          opportunitiesCompleted: [],
+          opportunitiesSignedUp: [],
         };
 
         await setDoc(doc(db, "users", user.uid), nUser);

@@ -41,7 +41,8 @@ function Dashboard() {
                     types: firebaseData.type ? [firebaseData.type] : [],
                     location: firebaseData.location || "",
                     daysAvailable: firebaseData.daysAvailable || "",
-                    ageRange: firebaseData.ageRange || ""
+                    ageRange: firebaseData.ageRange || "",
+                    id: doc.id
                 };
                 //changed from class to an actual ts type. 
                 volunteer.description =
