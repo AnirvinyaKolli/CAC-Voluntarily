@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebase";
 import { useUserData } from "../context/UserDataContext";
 import { profilePictures } from "../assets/ProfilePictures";
@@ -33,6 +32,7 @@ export default function Dashboard() {
             location: d.location ?? "",
             daysAvailable: d.daysAvailable ?? "",
             ageRange: d.ageRange ?? "",
+            distance: d.distance ?? 0,
           };
         });
     }
@@ -41,7 +41,9 @@ export default function Dashboard() {
     fetchOpportunities(userData.opportunitiesSignedUp).then(setSignedupEvents);
   }, [userData]);
   
-  if (loading || userDataLoading) return <EllipseLoader></EllipseLoader>;
+  if (loading || userDataLoading) {
+    return <EllipseLoader></EllipseLoader>;
+  }
 
   if (!userData)
     return (
@@ -52,9 +54,6 @@ export default function Dashboard() {
 
   const renderCards = () => {
     const events = activeTab === "completed" ? completedEvents : signedupEvents;
-    console.log(events.map((e) => e.id));
-    console.log(userData.opportunitiesCompleted);
-    console.log(userData.opportunitiesSignedUp);
     if (events.length === 0)
       return <p className="text-[#020079]">You have no {activeTab} events</p>;
 
@@ -75,6 +74,9 @@ export default function Dashboard() {
           <div className="mt-8 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-600 sm:text-base">
               {opportunity.location}
+            </span>
+            <span className="text-sm font-medium text-gray-600 sm:text-base">
+              {opportunity.distance.toFixed(1)} km away
             </span>
           </div>
         </div>

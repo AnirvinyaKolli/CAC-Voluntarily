@@ -13,7 +13,9 @@ function App() {
   const { user, loading: authLoading } = useAuth();
   const { userData, loading: dataLoading } = useUserData();
   
-  const waiting = authLoading || (!!user && (dataLoading || userData == null));
+
+  const waiting = authLoading || (!!user && dataLoading);
+  const missingProfile = !waiting && !!user && !userData;
 
   const home = !user
     ? "/login"
@@ -25,6 +27,12 @@ function App() {
     <BrowserRouter>
       {waiting ? (
         <EllipseLoader />
+      ) : missingProfile ? (
+        <main className="flex min-h-screen items-center justify-center p-6 text-center">
+          <p>
+            Your account is signed in, but its user profile could not be loaded.
+          </p>
+        </main>
       ) : (
         <Routes>
           <Route path="/" element={<Navigate to={home} replace />} />

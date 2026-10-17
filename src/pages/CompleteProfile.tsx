@@ -26,7 +26,6 @@ function CompleteProfile() {
             completedSignup: true,
             zip: zipCode
         });
-        console.log("Extra data finsiehd");
         nav('/dashboard');
     };
 

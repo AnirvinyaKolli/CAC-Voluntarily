@@ -6,15 +6,7 @@ import { useUserData } from "../context/UserDataContext";
 import EllipseLoader from "../components/EllipsesLoading";
 import type { OpportunityData } from "../OpportunityData";
 import OpportunityCard from "../components/OpportunityCard";
-
-let workType = {
-    comp: "ComputerScience",
-    mat: "MatthewWatching",
-    health: "Healthcare",
-    anim: "AnimalScience",
-    cook: "Culinary"
-};
-
+import { distanceInKm } from "../data/nearbyZipCodes";
 
 function OpportunitesPage() {
     const { user , loading} = useAuth();
@@ -25,59 +17,58 @@ function OpportunitesPage() {
         async function getOpportunities() {
             if (!userData || !user) return;
 
-            //Instead of filtering on ur browser it just only collects the ones with the zip code. 
-            const q = query(
-                collection(db, "opportunities"),
-                where("zipcodes", "array-contains", userData.zip)
-            )
-            const querySnapshot = await getDocs(q);
-
+            const userZip = userData.zip.trim().padStart(5, "0");
             const signedUpIds = new Set(userData.opportunitiesSignedUp ?? []);
             const opportunities: OpportunityData[] = [];
-            querySnapshot.forEach((doc) => {
-                if (signedUpIds.has(doc.id)) return;
 
-                const firebaseData = doc.data();
-                const volunteer : OpportunityData = {
+            const querySnapshot = await getDocs(query(
+                collection(db, "opportunities"),
+            where("zipcodes", "array-contains", userZip)
+            ));
+            if (querySnapshot.empty) {
+            const queuedZip = doc(db, "zipcodesForScrapeying", userZip);
+                if (!(await getDoc(queuedZip)).exists()) {
+                await setDoc(queuedZip, { zip: userZip });
+                }
+            }
+
+            querySnapshot.forEach((opportunityDoc) => {
+                if (signedUpIds.has(opportunityDoc.id)) return;
+
+                const firebaseData = opportunityDoc.data();
+                const opportunityZips: string[] = Array.isArray(firebaseData.zipcodes)
+                    ? firebaseData.zipcodes
+                    : [userZip];
+                const distance = Math.min(
+                    ...opportunityZips.map((zip) => distanceInKm(userZip, String(zip).trim().padStart(5, "0")))
+                );
+                opportunities.push({
                     locationName: firebaseData.name || "",
-                    description: "",
-                    types: firebaseData.type ? [firebaseData.type] : [],
+                    description:
+                        `${firebaseData.type || "Volunteer opportunity"}\n` +
+                        `Location: ${firebaseData.location || "N/A"}\n` +
+                        `Availability: ${firebaseData.daysAvailable || "N/A"}\n` +
+                        `Age: ${firebaseData.ageRange || "N/A"}`,
+                        types: firebaseData.type ? [firebaseData.type] : [],
                     location: firebaseData.location || "",
                     daysAvailable: firebaseData.daysAvailable || "",
                     ageRange: firebaseData.ageRange || "",
-                    id: doc.id
-                };
-                //changed from class to an actual ts type. 
-                volunteer.description =
-                    `${firebaseData.type || "Volunteer opportunity"}\n` +
-                    `Location: ${firebaseData.location || "N/A"}\n` +
-                    `Availability: ${firebaseData.daysAvailable || "N/A"}\n` +
-                    `Age: ${firebaseData.ageRange || "N/A"}`;
-                    opportunities.push(volunteer);
+                    id: opportunityDoc.id,
+                    distance: distance,
+                });
             });
+        setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]);
+    }
 
-            setData(opportunities);
+    getOpportunities();
+}, [user, userData]);
 
-             if (opportunities.length === 0 && userData.zip) {
-                const zipcodeDoc = await getDoc(
-                    doc(db, "zipcodesForScrapeying", userData.zip)
-                );
-                if (!zipcodeDoc.exists()) {
-                    await setDoc(
-                        doc(db, "zipcodesForScrapeying", userData.zip),
-                        {
-                            zip: userData.zip
-                        }
-                    );
-                }
-            }
-        }
-
-        getOpportunities();
-    }, [user, userData]);
-
-    if (loading || userDataLoading) return <EllipseLoader></EllipseLoader>;
-    if (data.length === 0) return <EllipseLoader></EllipseLoader>;
+    if (loading || userDataLoading) {
+        return <EllipseLoader></EllipseLoader>;
+    }
+    if (data.length === 0) {
+        return <EllipseLoader></EllipseLoader>;
+    }
 
     return (
         <main className="min-h-screen bg-gray-100 p-6">
