@@ -10,7 +10,7 @@ interface OpportunityCardProps {
 
 function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const { user } = useAuth();
-  const [status, setStatus] = useState<"idle" | "saving" | "signedUp" | "error">("idle");
+  const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
 
   const handleSignUp = async () => {
     if (!user) return;
@@ -19,7 +19,6 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
       await updateDoc(doc(db, "users", user.uid), {
         opportunitiesSignedUp: arrayUnion(opportunity.id),
       });
-      setStatus("signedUp");
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -50,11 +49,10 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
 
       <button
         onClick={handleSignUp}
-        disabled={status === "saving" || status === "signedUp"}
+        disabled={status === "saving"}
         className="mt-5 w-full rounded-lg bg-[#020079] px-4 py-2 text-[#ffffe3] transition-colors duration-200 hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "saving" && "Signing up..."}
-        {status === "signedUp" && "Signed up"}
         {status === "error" && "Error, try again"}
         {status === "idle" && "Sign up"}
       </button>

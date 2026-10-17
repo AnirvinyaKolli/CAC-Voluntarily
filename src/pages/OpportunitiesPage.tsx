@@ -32,8 +32,11 @@ function OpportunitesPage() {
             )
             const querySnapshot = await getDocs(q);
 
+            const signedUpIds = new Set(userData.opportunitiesSignedUp ?? []);
             const opportunities: OpportunityData[] = [];
             querySnapshot.forEach((doc) => {
+                if (signedUpIds.has(doc.id)) return;
+
                 const firebaseData = doc.data();
                 const volunteer : OpportunityData = {
                     locationName: firebaseData.name || "",
@@ -71,7 +74,7 @@ function OpportunitesPage() {
         }
 
         getOpportunities();
-    }, [user]);
+    }, [user, userData]);
 
     if (loading || userDataLoading) return <EllipseLoader></EllipseLoader>;
     if (data.length === 0) return <EllipseLoader></EllipseLoader>;
@@ -81,7 +84,7 @@ function OpportunitesPage() {
             <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
 
                 {data.map((volunteer) => (
-                    <OpportunityCard opportunity={volunteer}/>
+                    <OpportunityCard key={volunteer.id} opportunity={volunteer}/>
                 ))}
 
             </div>
