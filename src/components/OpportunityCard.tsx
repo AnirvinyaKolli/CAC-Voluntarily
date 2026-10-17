@@ -3,6 +3,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { type OpportunityData } from "../OpportunityData";
+import { getCompatibilityScore } from "../compatablityScore";
 
 interface OpportunityCardProps {
   opportunity: OpportunityData;
@@ -11,6 +12,7 @@ interface OpportunityCardProps {
 function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const { user } = useAuth();
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
+  const compatibilityPercent = Math.round(getCompatibilityScore(opportunity) * 100);
 
   const handleSignUp = async () => {
     if (!user) return;
@@ -30,6 +32,9 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
       <h2 className="mb-3 text-xl font-bold text-gray-900">
         {opportunity.locationName}
       </h2>
+      <p className="mb-3 text-sm font-semibold text-[#020079]">
+        Compatibility: {compatibilityPercent}%
+      </p>
       <p className="whitespace-pre-line text-gray-600">
         {opportunity.description}
       </p>

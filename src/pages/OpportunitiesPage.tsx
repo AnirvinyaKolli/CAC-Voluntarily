@@ -7,6 +7,7 @@ import EllipseLoader from "../components/EllipsesLoading";
 import type { OpportunityData } from "../OpportunityData";
 import OpportunityCard from "../components/OpportunityCard";
 import { distanceInKm } from "../data/nearbyZipCodes";
+import { getCompatibilityScore } from "../compatablityScore";
 
 function OpportunitesPage() {
     const { user , loading} = useAuth();
@@ -57,11 +58,12 @@ function OpportunitesPage() {
                     distance: distance,
                 });
             });
-        setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]);
-    }
-
-    getOpportunities();
-}, [user, userData]);
+            setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]
+                .sort((a, b) => getCompatibilityScore(b) - getCompatibilityScore(a))
+            );
+        }
+        getOpportunities();
+    }, [user, userData]);
 
     if (loading || userDataLoading) {
         return <EllipseLoader></EllipseLoader>;
