@@ -33,7 +33,7 @@ export default function Dashboard() {
             location: d.location ?? "",
             daysAvailable: d.daysAvailable ?? "",
             ageRange: d.ageRange ?? "",
-            distance: d.distance ?? 0,
+            compatibilityScore: 0,
           };
         });
     }
@@ -75,9 +75,6 @@ export default function Dashboard() {
           <div className="mt-8 flex items-center justify-between">
             <span className="text-sm font-medium text-gray-600 sm:text-base">
               {opportunity.location}
-            </span>
-            <span className="text-sm font-medium text-gray-600 sm:text-base">
-              {opportunity.distance.toFixed(1)} km away
             </span>
           </div>
         </div>

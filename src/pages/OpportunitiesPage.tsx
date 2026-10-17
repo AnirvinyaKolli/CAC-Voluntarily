@@ -55,11 +55,11 @@ function OpportunitesPage() {
                     daysAvailable: firebaseData.daysAvailable || "",
                     ageRange: firebaseData.ageRange || "",
                     id: opportunityDoc.id,
-                    distance: distance,
+                    compatibilityScore: getCompatibilityScore(distance),
                 });
             });
             setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]
-                .sort((a, b) => getCompatibilityScore(b) - getCompatibilityScore(a))
+                .sort((a, b) => b.compatibilityScore - a.compatibilityScore)
             );
         }
         getOpportunities();

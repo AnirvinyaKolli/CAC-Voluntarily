@@ -3,7 +3,7 @@ import { doc, updateDoc, arrayUnion } from "firebase/firestore";
 import { db } from "../firebase";
 import { useAuth } from "../context/AuthContext";
 import { type OpportunityData } from "../OpportunityData";
-import { getCompatibilityScore } from "../compatablityScore";
+import CompatibilityDial from "./CompatibilityDial";
 
 interface OpportunityCardProps {
   opportunity: OpportunityData;
@@ -12,8 +12,8 @@ interface OpportunityCardProps {
 function OpportunityCard({ opportunity }: OpportunityCardProps) {
   const { user } = useAuth();
   const [status, setStatus] = useState<"idle" | "saving" | "error">("idle");
-  const compatibilityPercent = Math.round(getCompatibilityScore(opportunity) * 100);
-
+  const compatibilityPercent = Math.round(opportunity.compatibilityScore * 100);
+  console.log('Compatibility percent for opportunity', opportunity.id, ':', compatibilityPercent);
   const handleSignUp = async () => {
     if (!user) return;
     setStatus("saving");
@@ -29,12 +29,12 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
 
   return (
     <article className="rounded-lg bg-white p-5 shadow-md">
-      <h2 className="mb-3 text-xl font-bold text-gray-900">
-        {opportunity.locationName}
-      </h2>
-      <p className="mb-3 text-sm font-semibold text-[#020079]">
-        Compatibility: {compatibilityPercent}%
-      </p>
+      <div className="mb-3 flex items-start justify-between gap-3">
+        <h2 className="text-xl font-bold text-gray-900">
+          {opportunity.locationName}
+        </h2>
+        <CompatibilityDial score={compatibilityPercent} />
+      </div>
       <p className="whitespace-pre-line text-gray-600">
         {opportunity.description}
       </p>
