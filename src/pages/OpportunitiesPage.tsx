@@ -16,7 +16,7 @@ let workType = {
 };
 
 
-function Dashboard() {
+function OpportunitesPage() {
     const { user , loading} = useAuth();
     const [data, setData] = useState<OpportunityData[]>([]);
     const {userData, loading: userDataLoading} = useUserData();
@@ -89,4 +89,4 @@ function Dashboard() {
     );
 }
 
-export default Dashboard;
+export default OpportunitesPage;
