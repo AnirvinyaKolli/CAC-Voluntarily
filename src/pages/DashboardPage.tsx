@@ -8,7 +8,7 @@ import type { OpportunityData } from "../OpportunityData";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function Dashboard() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
   const { userData, loading: userDataLoading } = useUserData();
   const [completedEvents, setCompletedEvents] = useState<OpportunityData[]>([]);
@@ -16,6 +16,7 @@ export default function Dashboard() {
 
 
   useEffect(() => {
+    //Change the type OpportunityData to a new one specifically for the dashboard. 
     async function fetchOpportunities(ids: string[] = []): Promise<OpportunityData[]> {
       const snaps = await Promise.all(
         ids.map((id) => getDoc(doc(db, "opportunities", id)))

@@ -23,25 +23,25 @@ function OpportunitesPage() {
 
             const querySnapshot = await getDocs(query(
                 collection(db, "opportunities"),
-            where("zipcodes", "array-contains", userZip)
+                where("zipcodes", "array-contains", userZip)
             ));
             if (querySnapshot.empty) {
-            const queuedZip = doc(db, "zipcodesForScrapeying", userZip);
-                if (!(await getDoc(queuedZip)).exists()) {
-                await setDoc(queuedZip, { zip: userZip });
-                }
+                const queuedZip = doc(db, "zipcodesForScrapeying", userZip);
+                    if (!(await getDoc(queuedZip)).exists()) {
+                        await setDoc(queuedZip, { zip: userZip, status: "queued" });
+                    } else if ((await getDoc(queuedZip)).data()?.status === "available") {
+                        setData([]); // If the zip code is available but empty, no opps exist
+                        return; 
+                    }
             }
 
             querySnapshot.forEach((opportunityDoc) => {
                 if (signedUpIds.has(opportunityDoc.id)) return;
 
                 const firebaseData = opportunityDoc.data();
-                const opportunityZips: string[] = Array.isArray(firebaseData.zipcodes)
-                    ? firebaseData.zipcodes
-                    : [userZip];
-                const distance = Math.min(
-                    ...opportunityZips.map((zip) => distanceInKm(userZip, String(zip).trim().padStart(5, "0")))
-                );
+                const opportunityZip: string = firebaseData.locationZipcode;;
+                const distance = distanceInKm(userZip, opportunityZip);
+                console.log('Opportunity zip:', opportunityZip, 'User zip:', userZip, 'Distance:', distance);
                 opportunities.push({
                     locationName: firebaseData.name || "",
                     description:
