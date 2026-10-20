@@ -8,6 +8,7 @@ import type { OpportunityData } from "../OpportunityData";
 import OpportunityCard from "../components/OpportunityCard";
 import { distanceInKm } from "../data/nearbyZipCodes";
 import { getCompatibilityScore } from "../compatablityScore";
+import blueBackground from "../assets/blueBg.jpg";
 
 function OpportunitesPage() {
     const { user , loading} = useAuth();
@@ -80,20 +81,27 @@ function OpportunitesPage() {
 
     if (data.length === 0) {
         return (
-            <main className="flex min-h-screen items-center justify-center bg-gray-100 px-6 text-center">
+            <main className="relative isolate flex min-h-screen items-center justify-center overflow-hidden bg-gray-100 px-6 text-center">
+                <img src={blueBackground} alt="" aria-hidden="true" className="fixed inset-0 -z-10 h-screen w-screen object-cover saturate-75 opacity-30" />
                 <p className="text-lg text-[#020079]">No opportunities are available for your area right now.</p>
             </main>
         );
     }
 
     return (
-        <main className="min-h-screen bg-gray-100 p-6">
-            <div className="mx-auto grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <main className="relative isolate min-h-screen overflow-hidden bg-gray-100 p-6 sm:p-8 lg:p-10">
+            <img src={blueBackground} alt="" aria-hidden="true" className="fixed inset-0 -z-10 h-screen w-screen object-cover saturate-75 opacity-30" />
+            <h1 className="mx-auto mb-7 max-w-7xl text-center text-3xl font-bold text-[#020079] sm:text-4xl">
+                Volunteer Opportunities Near You
+            </h1>
+            <div className="mx-auto max-w-7xl rounded-3xl bg-gray-200/95 p-5 shadow-sm sm:p-8 lg:p-10">
+                <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
 
-                {data.map((volunteer) => (
-                    <OpportunityCard key={volunteer.id} opportunity={volunteer}/>
-                ))}
+                    {data.map((volunteer) => (
+                        <OpportunityCard key={volunteer.id} opportunity={volunteer}/>
+                    ))}
 
+                </div>
             </div>
         </main>
     );

@@ -28,7 +28,7 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
   };
 
   return (
-    <article className="rounded-lg bg-white p-5 shadow-md">
+    <article className="flex h-full flex-col rounded-lg bg-white p-5 shadow-md">
       <div className="mb-3 flex items-start justify-between gap-3">
         <h2 className="text-xl font-bold text-gray-900">
           {opportunity.locationName}
@@ -55,7 +55,7 @@ function OpportunityCard({ opportunity }: OpportunityCardProps) {
       <button
         onClick={handleSignUp}
         disabled={status === "saving"}
-        className="mt-5 w-full rounded-lg bg-[#020079] px-4 py-2 text-[#ffffe3] transition-colors duration-200 hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
+        className="mt-auto w-full rounded-lg bg-[#020079] px-4 py-2 text-[#ffffe3] transition-colors duration-200 hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
       >
         {status === "saving" && "Signing up..."}
         {status === "error" && "Error, try again"}

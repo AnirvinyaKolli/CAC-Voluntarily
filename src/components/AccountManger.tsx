@@ -24,7 +24,7 @@ function AccountManager() {
     <div className="relative flex items-stretch">
       <button
         onClick={handleClick}
-        className="flex items-center px-12 py-5 text-[#ffffe3] transition-colors duration-200 hover:bg-[#020079]"
+        className="flex items-center px-12 py-5 font-normal text-[#ffffe3] transition-colors duration-200 hover:bg-[#020079]"
       >
         <img
           src={userData?.pfpChoice ? profilePictures[userData.pfpChoice] : profilePictures[0]}
