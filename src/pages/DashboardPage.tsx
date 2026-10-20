@@ -5,14 +5,32 @@ import { useUserData } from "../context/UserDataContext";
 import { profilePictures } from "../assets/ProfilePictures";
 import EllipseLoader from "../components/EllipsesLoading";
 import type { OpportunityData } from "../OpportunityData";
-import { doc, getDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
 
 export default function Dashboard() {
-  const { loading } = useAuth();
+  const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
   const { userData, loading: userDataLoading } = useUserData();
   const [completedEvents, setCompletedEvents] = useState<OpportunityData[]>([]);
   const [signedupEvents, setSignedupEvents] = useState<OpportunityData[]>([]);
+  const [completingEventId, setCompletingEventId] = useState<string | null>(null);
+  const [completionError, setCompletionError] = useState(false);
+
+  const markAsCompleted = async (eventId: string) => {
+    if (!user || completingEventId) return;
+    setCompletingEventId(eventId);
+    setCompletionError(false);
+    try {
+      await updateDoc(doc(db, "users", user.uid), {
+        opportunitiesSignedUp: arrayRemove(eventId),
+        opportunitiesCompleted: arrayUnion(eventId),
+      });
+    } catch (error) {
+      setCompletionError(true);
+    } finally {
+      setCompletingEventId(null);
+    }
+  };
 
 
   useEffect(() => {
@@ -76,6 +94,16 @@ export default function Dashboard() {
             <span className="text-sm font-medium text-gray-600 sm:text-base">
               {opportunity.location}
             </span>
+            {activeTab === "upcoming" && (
+              <button
+                type="button"
+                onClick={() => markAsCompleted(opportunity.id)}
+                disabled={completingEventId !== null}
+                className="rounded-lg bg-[#020079] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {completingEventId === opportunity.id ? "Saving..." : "Mark completed"}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -160,6 +188,11 @@ export default function Dashboard() {
             {/*Going through the array of opportunities*/}
             {renderCards()}
           </div>
+          {completionError && (
+            <p role="alert" className="mt-4 text-sm text-red-700">
+              Could not update this event. Please try again.
+            </p>
+          )}
         </section>
       </div>
     </main>

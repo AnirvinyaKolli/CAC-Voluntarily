@@ -12,12 +12,17 @@ import { getCompatibilityScore } from "../compatablityScore";
 function OpportunitesPage() {
     const { user , loading} = useAuth();
     const [data, setData] = useState<OpportunityData[]>([]);
+    const [opportunitiesLoading, setOpportunitiesLoading] = useState(true);
     const {userData, loading: userDataLoading} = useUserData();
 
     useEffect(() => {
         async function getOpportunities() {
-            if (!userData || !user) return;
+            if (!userData || !user) {
+                setOpportunitiesLoading(false);
+                return;
+            }
 
+            setOpportunitiesLoading(true);
             const userZip = userData.zip.trim().padStart(5, "0");
             const signedUpIds = new Set(userData.opportunitiesSignedUp ?? []);
             const opportunities: OpportunityData[] = [];
@@ -61,6 +66,7 @@ function OpportunitesPage() {
             setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]
                 .sort((a, b) => b.compatibilityScore - a.compatibilityScore)
             );
+            setOpportunitiesLoading(false);
         }
         getOpportunities();
     }, [user, userData]);
@@ -68,8 +74,16 @@ function OpportunitesPage() {
     if (loading || userDataLoading) {
         return <EllipseLoader></EllipseLoader>;
     }
-    if (data.length === 0) {
+    if (opportunitiesLoading) {
         return <EllipseLoader></EllipseLoader>;
+    }
+
+    if (data.length === 0) {
+        return (
+            <main className="flex min-h-screen items-center justify-center bg-gray-100 px-6 text-center">
+                <p className="text-lg text-[#020079]">No opportunities are available for your area right now.</p>
+            </main>
+        );
     }
 
     return (
