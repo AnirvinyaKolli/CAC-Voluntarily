@@ -14,7 +14,7 @@ function AccountManager() {
     <div className="flex min-w-0 items-center md:w-full">
       <button
         onClick={handleSignOut}
-        className="rounded-lg px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:text-white md:w-full md:px-3 md:text-left md:hover:bg-white/10"
+        className="rounded-lg px-3 py-2 text-xs font-medium text-white/70 transition-colors hover:text-white md:w-full md:px-3 md:text-center md:hover:bg-white/10"
       >
         Sign out
       </button>
