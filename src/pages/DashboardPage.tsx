@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [completingEventId, setCompletingEventId] = useState<string | null>(null);
   const [completionError, setCompletionError] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<OpportunityData | null>(null);
+  const [unregisteringEventId, setUnregisteringEventId] = useState<string | null>(null);
 
   const markAsCompleted = async (completedAt: Date, hours: number) => {
     const eventId = selectedEvent?.id;
@@ -37,6 +38,21 @@ export default function Dashboard() {
       setCompletionError(true);
     } finally {
       setCompletingEventId(null);
+    }
+  };
+
+  const unregisterFromEvent = async (eventId: string) => {
+    if (!user || unregisteringEventId || completingEventId) return;
+    setUnregisteringEventId(eventId);
+    setCompletionError(false);
+    try {
+      await updateDoc(doc(db, "users", user.uid), {
+        opportunitiesSignedUp: arrayRemove(eventId),
+      });
+    } catch {
+      setCompletionError(true);
+    } finally {
+      setUnregisteringEventId(null);
     }
   };
 
@@ -119,19 +135,29 @@ export default function Dashboard() {
               {opportunity.daysAvailable}
             </p>
           </div>
-          <div className="mt-8 flex items-center justify-between">
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-3">
             <span className="text-sm font-medium text-gray-600 sm:text-base">
               {opportunity.location}
             </span>
             {activeTab === "upcoming" && (
-              <button
-                type="button"
-                onClick={() => setSelectedEvent(opportunity)}
-                disabled={completingEventId !== null}
-                className="rounded-lg bg-[#020079] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {completingEventId === opportunity.id ? "Saving..." : "Mark completed"}
-              </button>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedEvent(opportunity)}
+                  disabled={completingEventId !== null || unregisteringEventId !== null}
+                  className="rounded-lg bg-[#020079] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {completingEventId === opportunity.id ? "Saving..." : "Mark completed"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => unregisterFromEvent(opportunity.id)}
+                  disabled={unregisteringEventId !== null || completingEventId !== null}
+                  className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-red-300 hover:bg-red-50 hover:text-red-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {unregisteringEventId === opportunity.id ? "Unregistering..." : "Unregister"}
+                </button>
+              </div>
             )}
           </div>
         </div>
