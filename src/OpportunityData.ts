@@ -6,6 +6,7 @@ export interface OpportunityData {
     daysAvailable: string
     ageRange: string
     id: string
+    distance: number
     compatibilityScore: number
 }
 

@@ -77,6 +77,7 @@ export default function Dashboard() {
             location: d.location ?? "",
             daysAvailable: d.daysAvailable ?? "",
             ageRange: d.ageRange ?? "",
+            distance: d.distance ?? 0,
             compatibilityScore: 0,
           };
         });
@@ -98,6 +99,7 @@ export default function Dashboard() {
             location: d.location ?? "",
             daysAvailable: d.daysAvailable ?? "",
             ageRange: d.ageRange ?? "",
+            distance: d.distance ?? 0,
             compatibilityScore: 0,
           };
         });

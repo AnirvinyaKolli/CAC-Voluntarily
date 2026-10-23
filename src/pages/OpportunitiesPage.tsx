@@ -61,8 +61,12 @@ function OpportunitesPage() {
                     daysAvailable: firebaseData.daysAvailable || "",
                     ageRange: firebaseData.ageRange || "",
                     id: opportunityDoc.id,
-                    compatibilityScore: getCompatibilityScore(distance),
+                    distance: distance,
+                    compatibilityScore: 0, // Placeholder value, replace with actual compatibility score
                 });
+                opportunities.map((opportunity) => {
+                    opportunity.compatibilityScore = getCompatibilityScore(opportunity, userData);
+                })
             });
             setData([...new Map(opportunities.map((opportunity) => [opportunity.id, opportunity])).values()]
                 .sort((a, b) => b.compatibilityScore - a.compatibilityScore)
