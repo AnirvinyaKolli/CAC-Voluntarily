@@ -5,7 +5,10 @@ import { useUserData } from "../context/UserDataContext";
 import { profilePictures } from "../assets/ProfilePictures";
 import EllipseLoader from "../components/EllipsesLoading";
 import type { OpportunityData } from "../OpportunityData";
-import { arrayRemove, arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
+import type { CompletedOpportunity } from "../UserData";
+import CompletionPanel from "../components/CompletionPanel";
+import DashboardStatistics from "../components/DashboardStatistics";
+import { arrayRemove, arrayUnion, doc, getDoc, increment, updateDoc } from "firebase/firestore";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -15,16 +18,21 @@ export default function Dashboard() {
   const [signedupEvents, setSignedupEvents] = useState<OpportunityData[]>([]);
   const [completingEventId, setCompletingEventId] = useState<string | null>(null);
   const [completionError, setCompletionError] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<OpportunityData | null>(null);
 
-  const markAsCompleted = async (eventId: string) => {
+  const markAsCompleted = async (completedAt: Date, hours: number) => {
+    const eventId = selectedEvent?.id;
     if (!user || completingEventId) return;
+    if (!eventId) return;
     setCompletingEventId(eventId);
     setCompletionError(false);
     try {
       await updateDoc(doc(db, "users", user.uid), {
         opportunitiesSignedUp: arrayRemove(eventId),
-        opportunitiesCompleted: arrayUnion(eventId),
+        opportunitiesCompleted: arrayUnion({ opportunityId: eventId, completedAt, hours }),
+        totalHours: increment(hours),
       });
+      setSelectedEvent(null);
     } catch (error) {
       setCompletionError(true);
     } finally {
@@ -55,8 +63,29 @@ export default function Dashboard() {
           };
         });
     }
+    async function fetchCompletedOpportunities(ops: CompletedOpportunity[] = []): Promise<OpportunityData[]> {
+      const ids = ops.map((op) => op.opportunityId);
+    const snaps = await Promise.all(
+        ids.map((id) => getDoc(doc(db, "opportunities", id)))
+      );
+      return snaps
+        .filter((s) => s.exists())
+        .map((s) => {
+          const d = s.data()!;
+          return {
+            id: s.id,
+            locationName: d.locationName ?? d.name ?? "",
+            description: d.description ?? "",
+            types: d.types ?? (d.type ? [d.type] : []),
+            location: d.location ?? "",
+            daysAvailable: d.daysAvailable ?? "",
+            ageRange: d.ageRange ?? "",
+            compatibilityScore: 0,
+          };
+        });
+    }
     if (!userData) return;
-    fetchOpportunities(userData.opportunitiesCompleted).then(setCompletedEvents);
+    fetchCompletedOpportunities(userData.opportunitiesCompleted).then(setCompletedEvents);
     fetchOpportunities(userData.opportunitiesSignedUp).then(setSignedupEvents);
   }, [userData]);
   
@@ -97,7 +126,7 @@ export default function Dashboard() {
             {activeTab === "upcoming" && (
               <button
                 type="button"
-                onClick={() => markAsCompleted(opportunity.id)}
+                onClick={() => setSelectedEvent(opportunity)}
                 disabled={completingEventId !== null}
                 className="rounded-lg bg-[#020079] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#0021f3] disabled:cursor-not-allowed disabled:opacity-60"
               >
@@ -194,7 +223,21 @@ export default function Dashboard() {
             </p>
           )}
         </section>
+        <DashboardStatistics
+          totalHours={userData.totalHours}
+          completedEvents={completedEvents.length}
+          upcomingEvents={signedupEvents.length}
+          completionRecords={userData.opportunitiesCompleted ?? []}
+        />
       </div>
+      {selectedEvent && (
+        <CompletionPanel
+          eventName={selectedEvent.locationName}
+          saving={completingEventId !== null}
+          onCancel={() => setSelectedEvent(null)}
+          onSubmit={markAsCompleted}
+        />
+      )}
     </main>
   );
 }

@@ -25,7 +25,12 @@ function OpportunitesPage() {
 
             setOpportunitiesLoading(true);
             const userZip = userData.zip.trim().padStart(5, "0");
-            const signedUpIds = new Set(userData.opportunitiesSignedUp ?? []);
+            const unavailableIds = new Set([
+                ...(userData.opportunitiesSignedUp ?? []),
+                ...(userData.opportunitiesCompleted ?? []).map((event) =>
+                    typeof event === "string" ? event : event.opportunityId
+                ),
+            ]);
             const opportunities: OpportunityData[] = [];
 
             const querySnapshot = await getDocs(query(
@@ -43,7 +48,7 @@ function OpportunitesPage() {
             }
 
             querySnapshot.forEach((opportunityDoc) => {
-                if (signedUpIds.has(opportunityDoc.id)) return;
+                if (unavailableIds.has(opportunityDoc.id)) return;
 
                 const firebaseData = opportunityDoc.data();
                 const opportunityZip: string = firebaseData.locationZipcode;;

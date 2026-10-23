@@ -1,5 +1,11 @@
-//THIS THE LIST OF EVERYTHING IN USER DATA APART FROM THE COLLECTIONS OF EVENTS
+import type { Timestamp } from "firebase/firestore";
 
+//THIS THE LIST OF EVERYTHING IN USER DATA APART FROM THE COLLECTIONS OF EVENTS
+export interface CompletedOpportunity {
+    opportunityId: string;
+    completedAt: Date | Timestamp;
+    hours: number;
+}
 export interface UserData {
     // Created at when u login 
     uid : string
@@ -11,7 +17,8 @@ export interface UserData {
     displayName : string 
     pfpChoice : number  
     zip : string
-    opportunitiesCompleted : string[]
+    /** Completion records used to build activity statistics over time. */
+    opportunitiesCompleted: CompletedOpportunity[]
     opportunitiesSignedUp : string[]
 
 }
