@@ -1,12 +1,13 @@
 // Size the account manager button properly so that the things in the drop down don't get squished
 
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import AccountManager from "./AccountManger";
 
 function Navbar() {
   const { user } = useAuth();
+  const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
@@ -26,17 +27,32 @@ function Navbar() {
         </div>
 
         <div className="flex flex-1 items-center justify-center gap-1 md:flex-none md:flex-col md:items-stretch md:gap-2">
-          <NavLink
-            to="/dashboard"
-            className={({ isActive }) => `rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-white/10 text-white" : "text-white/70 hover:text-white"}`}
-          >
-            Dashboard
-          </NavLink>
+          <div className="flex items-center gap-1 md:flex-col md:items-stretch md:gap-0">
+            <NavLink
+              to="/dashboard"
+              end
+              className={({ isActive }) => `rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${isActive && !["#statistics", "#events"].includes(location.hash) ? "bg-white/10 text-white" : "text-white/70 hover:text-white"}`}
+            >
+              Dashboard
+            </NavLink>
+            <NavLink
+              to="/dashboard#events"
+              className={({ isActive }) => `rounded-lg px-4 py-2.5 text-sm font-medium transition-colors md:ml-4 md:my-1 md:border-l md:border-white/20 md:rounded-l-none md:py-2 ${isActive && location.hash === "#events" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+            >
+              My Events
+            </NavLink>
+            <NavLink
+              to="/dashboard#statistics"
+              className={({ isActive }) => `rounded-lg px-4 py-2.5 text-sm font-medium transition-colors md:ml-4 md:my-1 md:border-l md:border-white/20 md:rounded-l-none md:py-2 ${isActive && location.hash === "#statistics" ? "bg-white/10 text-white" : "text-white/70 hover:bg-white/5 hover:text-white"}`}
+            >
+              Statistics
+            </NavLink>
+          </div>
           <NavLink
             to="/list"
             className={({ isActive }) => `rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${isActive ? "bg-white/10 text-white" : "text-white/70 hover:text-white"}`}
           >
-            List
+            Opportunities
           </NavLink>
         </div>
 

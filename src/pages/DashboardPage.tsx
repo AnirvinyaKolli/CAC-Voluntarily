@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { db } from "../firebase";
 import { useUserData } from "../context/UserDataContext";
@@ -11,6 +12,7 @@ import DashboardStatistics from "../components/DashboardStatistics";
 import { arrayRemove, arrayUnion, doc, getDoc, increment, updateDoc } from "firebase/firestore";
 
 export default function Dashboard() {
+  const location = useLocation();
   const { user, loading } = useAuth();
   const [activeTab, setActiveTab] = useState("upcoming");
   const { userData, loading: userDataLoading } = useUserData();
@@ -104,6 +106,11 @@ export default function Dashboard() {
     fetchCompletedOpportunities(userData.opportunitiesCompleted).then(setCompletedEvents);
     fetchOpportunities(userData.opportunitiesSignedUp).then(setSignedupEvents);
   }, [userData]);
+
+  useEffect(() => {
+    if (location.hash !== "#events") return;
+    document.getElementById("events")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [location]);
   
   if (loading || userDataLoading) {
     return <EllipseLoader></EllipseLoader>;
@@ -204,7 +211,7 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <section className="mt-20 sm:mt-24 lg:mt-28">
+        <section id="events" className="mt-20 scroll-mt-6 sm:mt-24 lg:mt-28">
           {/* Tabs */}
           <div className="flex justify-center">
             <div className="flex w-full max-w-xl justify-center gap-16 border-b border-gray-200 sm:gap-24">

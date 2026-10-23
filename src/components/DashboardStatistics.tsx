@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import {
   CartesianGrid,
   Line,
@@ -22,6 +24,13 @@ export default function DashboardStatistics({
   upcomingEvents,
   completionRecords,
 }: DashboardStatisticsProps) {
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash !== "#statistics") return;
+    document.getElementById("statistics")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [location]);
+
   const statistics = [
     { label: "Total hours", value: totalHours, detail: "volunteer hours" },
     { label: "Events completed", value: completedEvents, detail: "completed events" },
@@ -61,7 +70,7 @@ export default function DashboardStatistics({
   }
 
   return (
-    <section aria-labelledby="dashboard-statistics-heading" className="mt-12 sm:mt-16">
+    <section id="statistics" aria-labelledby="dashboard-statistics-heading" className="mt-20 scroll-mt-6 sm:mt-24">
       <div className="mb-4">
         <h2 id="dashboard-statistics-heading" className="text-xl font-bold text-[#020079] sm:text-2xl">
           Your statistics
