@@ -53,15 +53,10 @@ function OpportunitesPage() {
                 const firebaseData = opportunityDoc.data();
                 const opportunityZip: string = firebaseData.locationZipcode;;
                 const distance = distanceInKm(userZip, opportunityZip);
-                console.log('Opportunity zip:', opportunityZip, 'User zip:', userZip, 'Distance:', distance);
                 opportunities.push({
                     locationName: firebaseData.name || "",
-                    description:
-                        `${firebaseData.type || "Volunteer opportunity"}\n` +
-                        `Location: ${firebaseData.location || "N/A"}\n` +
-                        `Availability: ${firebaseData.daysAvailable || "N/A"}\n` +
-                        `Age: ${firebaseData.ageRange || "N/A"}`,
-                        types: firebaseData.type ? [firebaseData.type] : [],
+                    description: firebaseData.description || "",
+                    types: firebaseData.type ? firebaseData.type.split(",").map((s: string) => s.trim()) : [],
                     location: firebaseData.location || "",
                     daysAvailable: firebaseData.daysAvailable || "",
                     ageRange: firebaseData.ageRange || "",

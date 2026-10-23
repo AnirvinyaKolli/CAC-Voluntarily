@@ -17,6 +17,7 @@ export interface UserData {
     displayName : string 
     pfpChoice : number  
     zip : string
+    interestAreas?: string[]
     /** Completion records used to build activity statistics over time. */
     opportunitiesCompleted: CompletedOpportunity[]
     opportunitiesSignedUp : string[]
